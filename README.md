@@ -1,34 +1,32 @@
-# 숲 (Forest) - 목표 관리 앱
+# 하루시작 (harussijak)
 
-씨앗을 심고, 물을 주고, 숲을 만드는 목표 관리 서비스. (Vite + React + TypeScript)
+목표를 씨앗으로 심고, 루틴을 실천하며 물을 주고, 시간이 지나며 나무로 성장해
+숲을 이루는 목표관리 앱. 핵심은 "행동 자체"가 아니라 "행동의 이유(큰 목표)를
+계속 상기시키는 것".
 
-## 시작하기
+부담없이 시작, 죄책감 없이 재도전. 스트릭 개념 없음.
+
+## 스택
+
+- Vite + React + TypeScript
+- Tailwind CSS v4
+- 상태: React Context + localStorage (Supabase 연동 예정)
+
+## 개발
 
 ```bash
 npm install
-cp .env.example .env  # Supabase 키 채우기
-npm run dev
+npm run dev      # 개발 서버
+npm run build    # 타입체크 + 프로덕션 빌드
+npm run lint     # oxlint
 ```
 
 ## 구조
 
-- `src/lib/growth.ts` — 나무 성장 계산 (순수 함수, RN 이전 시 그대로 재사용 가능)
-- `src/lib/categories.ts` — 8개 고정 카테고리 설정 (색상/라벨)
-- `src/lib/sample-data.ts` — Supabase 연동 전 화면 개발용 샘플 데이터
-- `src/lib/supabase/` — Supabase 클라이언트
-- `src/pages/` — 화면별 컴포넌트
-- `supabase/schema.sql` — DB 스키마 (Supabase SQL Editor에 붙여넣고 실행)
+- `src/lib/` — UI/DB 비의존 순수 함수·타입 (성장 계산, 날짜, 기록 집계 등).
+  React Native 이전 시 그대로 재사용
+- `src/store/` — ForestProvider (Context + localStorage)
+- `src/pages/`, `src/components/` — 화면
+- `supabase/schema.sql` — 예정 DB 스키마
 
-## 구현된 화면
-
-- `/today` — 오늘의 물주기 (C1)
-- `/forest` — 전체 숲, 3x3 만다라트 그리드 (D2)
-- `/new-tree` — 새 나무 심기, 카테고리 선택 (B1)
-
-## 아직 안 만든 것
-
-- Supabase 실제 연동 (지금은 샘플 데이터로 동작)
-- 로그인/인증
-- 나무 상세 화면(D1), 만다라트 입력(B2), 컴백 화면(C3) 등
-- 배포: Vercel/Netlify에 연결하고 환경변수(.env 내용) 설정하면 바로 배포 가능
-  (Vite 정적 빌드라 Vercel도 프레임워크 프리셋만 "Vite"로 선택하면 됨)
+자세한 기획·결정 사항은 `CLAUDE.md` 참고.
