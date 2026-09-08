@@ -53,7 +53,7 @@ Routine.frequency(문자열)도 제거됨 → days(number[], 0~6) + src/lib/week
 Vite + React + TypeScript (Next.js 아님). 이유: 로그인 뒤 개인용 앱이라 SEO/SSR 불필요, 빠른 실험이 우선이라 가벼운 스택 선택. 원래 Next.js로 시작했다가 마이그레이션함.
 Supabase: DB(Postgres) + Auth + Storage(배경화면 이미지 저장용) 다 커버. supabase/schema.sql에 스키마 있음, Supabase SQL Editor에 붙여넣고 실행하면 됨.
 Git/배포: 레포 github.com/SeoHee3478/harussijak (main). 프로젝트 루트 = 이 폴더(forest-web/forest-web). .env는 gitignore됨(.env.example만 커밋). 첫 커밋 = localStorage 프로토타입.
-Vercel 배포 예정: Vite 정적 빌드라 프레임워크 프리셋 "Vite". SPA라 vercel.json에 rewrites 폴백 필요(/record, /tree/:id 새로고침). 지금은 미배포.
+Vercel: vercel.json에 SPA rewrites 폴백 추가 완료(모든 경로 → index.html). Root Directory = 레포 루트(./). Vite 프리셋 자동 감지. env 없이 배포됨(localStorage). 대시보드 Import Git Repository 방식 권장(push마다 자동 배포). 아직 Vercel 프로젝트 미생성.
 사용자 결론: Supabase + 로그인은 필수 (이 앱은 "재도전 UX"가 정체성 → 데이터 영속성이 특히 중요, iOS 사파리 7일 eviction 등 localStorage 한계). Supabase는 배포 후 별도 단계로.
 나중에 React Native로 전환 예정 (Flutter는 고려했으나 배제 — 웹 코드 재사용 안 되므로). 그래서 src/lib/ 안의 로직(growth.ts, categories.ts, types.ts)은 UI에 의존하지 않는 순수 함수/타입으로 유지해야 함. UI 컴포넌트(src/pages/)만 RN에서 새로 그리면 됨.
 상태관리 라이브러리 도입 지양 (Redux, Zustand 등). React 기본 state + Supabase 쿼리로 충분한 규모.
