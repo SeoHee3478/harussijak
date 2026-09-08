@@ -1,0 +1,64 @@
+@import "tailwindcss";
+/* Pretendard 가변 폰트 (동적 서브셋) - 한글 본문용 */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css");
+
+/* 디자인 방향: 평온한 숲. 웜 아이보리 배경 + 흙/이끼 톤.
+   실제 브랜드 컬러 확정되면 이 변수들만 교체하면 전체 반영됨. */
+:root {
+  --background: #faf7f1;
+  --foreground: #3d3831;
+  --card: #fffdf8;
+  --card-sunken: #f4f0e6;
+  --border: #e9e3d5;
+  --border-soft: #efe9dc;
+  --muted: #948d7c;
+  --leaf: #6f8a5b; /* 기록 화면 잎사귀 - 물 준 날 표시 */
+  --shadow-soft: 0 1px 2px rgba(61, 56, 49, 0.04),
+    0 8px 24px rgba(61, 56, 49, 0.05);
+
+  --radius: 14px;
+  --radius-lg: 18px;
+}
+
+/* 다크모드는 MVP 범위 밖 (스타일 가이드에 미결정 항목으로 남겨둠) */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Pretendard Variable", "Pretendard", -apple-system,
+    BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-size: 16px; /* 본문 기본값. 타이포 스케일: 12(보조)/14(캡션)/16(본문)/18(강조)/20~24(섹션제목)/28+(페이지제목) */
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.01em;
+  /* 한국어: 단어(어절) 중간에서 줄바꿈되지 않게. 아주 긴 문자열은 그래도 깨서 넘침 방지 */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+button {
+  font-family: inherit;
+  letter-spacing: inherit;
+}
+
+/* 포커스 링 - 차분하게 */
+:focus-visible {
+  outline: 2px solid var(--muted);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 가로 스크롤 영역의 스크롤바 숨김 (필터 칩 등) */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
