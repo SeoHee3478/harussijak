@@ -11,7 +11,7 @@ import RecordPage from "@/pages/RecordPage";
 function LoadingScreen() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-1.5">
-      <p className="text-base font-semibold">하루시작</p>
+      <p className="text-base font-semibold">하루씨작</p>
       <p className="text-sm text-[var(--muted)]">불러오는 중…</p>
     </main>
   );
