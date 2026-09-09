@@ -10,13 +10,22 @@ export default function RecordPage() {
 
   return (
     <main className="mx-auto max-w-[400px] px-4 pb-16 pt-6">
-      <button
-        type="button"
-        onClick={() => navigate("/")}
-        className="mb-4 flex items-center gap-1.5 text-sm text-[var(--muted)]"
-      >
-        <span aria-hidden>←</span> 숲으로
-      </button>
+      <div className="mb-4 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="flex items-center gap-1.5 text-sm text-[var(--muted)]"
+        >
+          <span aria-hidden>←</span> 숲으로
+        </button>
+        <button
+          type="button"
+          onClick={() => signOut()}
+          className="text-sm text-[var(--muted)] underline"
+        >
+          로그아웃
+        </button>
+      </div>
 
       <h1 className="mb-5 text-2xl font-semibold">기록</h1>
 
@@ -29,14 +38,6 @@ export default function RecordPage() {
         <h2 className="mb-3 text-xl font-semibold">나무별 발자취</h2>
         <TreeTimeline />
       </section>
-
-      <button
-        type="button"
-        onClick={() => signOut()}
-        className="w-full py-2 text-center text-sm text-[var(--muted)] underline"
-      >
-        로그아웃
-      </button>
     </main>
   );
 }
