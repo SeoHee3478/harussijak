@@ -3,6 +3,7 @@ import { useAuth } from "@/store/auth-context";
 import { ForestProvider } from "@/store/forest";
 import { useForest } from "@/store/forest-context";
 import LoginPage from "@/pages/LoginPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import HomePage from "@/pages/HomePage";
 import NewTreePage from "@/pages/NewTreePage";
 import TreeDetailPage from "@/pages/TreeDetailPage";
@@ -37,12 +38,14 @@ function ForestRoutes() {
 }
 
 export default function App() {
-  const { user, loading } = useAuth();
+  const { user, loading, passwordRecovery } = useAuth();
 
   return (
     <BrowserRouter>
       {loading ? (
         <LoadingScreen />
+      ) : passwordRecovery ? (
+        <ResetPasswordPage />
       ) : !user ? (
         <Routes>
           <Route path="*" element={<LoginPage />} />

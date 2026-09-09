@@ -11,6 +11,7 @@ import { AuthContext, type AuthContextValue } from "./auth-context";
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [passwordRecovery, setPasswordRecovery] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -18,9 +19,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
+    // "PASSWORD_RECOVERY" - 비밀번호 재설정 메일의 링크를 타고 돌아왔을 때 발생.
+    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s);
       setLoading(false);
+      if (event === "PASSWORD_RECOVERY") setPasswordRecovery(true);
     });
 
     return () => sub.subscription.unsubscribe();
@@ -45,8 +48,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const requestPasswordReset = useCallback<
+    AuthContextValue["requestPasswordReset"]
+  >(async (email) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error: error?.message ?? null };
+  }, []);
+
+  const updatePassword = useCallback<AuthContextValue["updatePassword"]>(
+    async (password) => {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (!error) setPasswordRecovery(false);
+      return { error: error?.message ?? null };
+    },
+    []
+  );
+
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
+    setPasswordRecovery(false);
   }, []);
 
   const value = useMemo<AuthContextValue>(
@@ -54,11 +76,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user: session?.user ?? null,
       session,
       loading,
+      passwordRecovery,
       signIn,
       signUp,
+      requestPasswordReset,
+      updatePassword,
       signOut,
     }),
-    [session, loading, signIn, signUp, signOut]
+    [
+      session,
+      loading,
+      passwordRecovery,
+      signIn,
+      signUp,
+      requestPasswordReset,
+      updatePassword,
+      signOut,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
