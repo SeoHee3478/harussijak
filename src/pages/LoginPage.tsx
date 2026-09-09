@@ -22,10 +22,13 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-[400px] flex-col justify-center px-6">
-      <p className="mb-1 text-sm text-[var(--muted)]">숲</p>
-      <h1 className="mb-6 text-2xl font-semibold leading-tight">
+      <h1 className="text-[28px] font-semibold leading-tight">하루시작</h1>
+      <p className="mt-1 mb-9 text-sm text-[var(--muted)]">
+        오늘 물 한 번 주는 것에서 시작해요
+      </p>
+      <h2 className="mb-6 text-xl font-semibold leading-tight">
         이메일로 로그인해요
-      </h1>
+      </h2>
 
       {sent ? (
         <p className="text-base leading-relaxed text-[var(--muted)]">
