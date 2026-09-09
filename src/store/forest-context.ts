@@ -6,6 +6,7 @@ import type { Branch, Forest, Tree } from "@/lib/types";
 
 export interface ForestContextValue {
   forest: Forest;
+  loading: boolean; // 처음 Supabase에서 숲을 불러오는 중인지
 
   addTree(input: { slot: number; name: string }): Tree;
   updateTree(
@@ -39,7 +40,6 @@ export interface ForestContextValue {
   ): void;
 
   setTheme(theme: string): void;
-  resetToSample(): void;
 }
 
 export const ForestContext = createContext<ForestContextValue | null>(null);

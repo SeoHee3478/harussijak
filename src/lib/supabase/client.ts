@@ -9,3 +9,6 @@ export function createClient() {
     import.meta.env.VITE_SUPABASE_ANON_KEY
   );
 }
+
+// 앱 전체에서 공유하는 싱글턴 클라이언트. 매번 새로 만들 필요 없음.
+export const supabase = createClient();

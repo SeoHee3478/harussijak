@@ -27,6 +27,7 @@ create table trees (
   forest_id uuid references forests(id) on delete cascade not null,
   slot int not null check (slot >= 1 and slot <= 8), -- 3x3 그리드에서의 위치(중앙 제외 8칸)
   name text not null,
+  color_key int, -- 튜닝된 8색 팔레트 중 선택(1~8). 비어있으면 slot 색을 씀.
   created_at timestamptz default now(),
   unique (forest_id, slot)
 );
