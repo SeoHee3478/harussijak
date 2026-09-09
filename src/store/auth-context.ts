@@ -9,8 +9,11 @@ export interface AuthContextValue {
   session: Session | null;
   loading: boolean;
 
-  // 비밀번호 없이 이메일 링크로 로그인. 성공하면 error는 null.
-  signInWithEmail(email: string): Promise<{ error: string | null }>;
+  // 이메일+비밀번호. 성공하면 error는 null.
+  // (Supabase 무료 플랜 기본 이메일 발송이 시간당 몇 통으로 심하게 제한돼 있어서,
+  // 매직 링크 대신 비밀번호 로그인으로 함 - "이메일 확인" 옵션을 꺼두면 메일 발송 자체가 없음)
+  signIn(email: string, password: string): Promise<{ error: string | null }>;
+  signUp(email: string, password: string): Promise<{ error: string | null }>;
   signOut(): Promise<void>;
 }
 

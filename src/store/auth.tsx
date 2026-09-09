@@ -1,5 +1,6 @@
 // 로그인 상태 저장소 - Supabase Auth 세션을 구독.
-// 비밀번호 없이 이메일로 받는 로그인 링크(매직 링크)만 사용 - 이 앱의 "부담 없이" 철학과 맞춤.
+// 이메일+비밀번호 로그인. (매직 링크는 Supabase 무료 플랜 기본 이메일 발송의
+// 시간당 발송량 제한 때문에 실사용이 어려워서 비밀번호 방식으로 변경함)
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
@@ -25,12 +26,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  const signInWithEmail = useCallback<AuthContextValue["signInWithEmail"]>(
-    async (email) => {
-      const { error } = await supabase.auth.signInWithOtp({
+  const signIn = useCallback<AuthContextValue["signIn"]>(
+    async (email, password) => {
+      const { error } = await supabase.auth.signInWithPassword({
         email,
-        options: { emailRedirectTo: window.location.origin },
+        password,
       });
+      return { error: error?.message ?? null };
+    },
+    []
+  );
+
+  const signUp = useCallback<AuthContextValue["signUp"]>(
+    async (email, password) => {
+      const { error } = await supabase.auth.signUp({ email, password });
       return { error: error?.message ?? null };
     },
     []
@@ -45,10 +54,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user: session?.user ?? null,
       session,
       loading,
-      signInWithEmail,
+      signIn,
+      signUp,
       signOut,
     }),
-    [session, loading, signInWithEmail, signOut]
+    [session, loading, signIn, signUp, signOut]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

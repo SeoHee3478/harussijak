@@ -1,23 +1,31 @@
 import { useState } from "react";
 import { useAuth } from "@/store/auth-context";
 
-// 로그인 화면 - 비밀번호 없이 이메일로 받는 링크 하나로만 들어옴.
+// 로그인 화면 - 이메일+비밀번호. (매직 링크는 Supabase 무료 플랜 기본 이메일 발송
+// 제한 때문에 실사용이 어려워서 비밀번호 방식으로 변경함 - 이메일 발송 자체가 없음)
 export default function LoginPage() {
-  const { signInWithEmail } = useAuth();
+  const { signIn, signUp } = useAuth();
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [signedUp, setSignedUp] = useState(false);
+
+  const canSubmit = email.trim().length > 0 && password.length >= 6;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.trim() || sending) return;
+    if (!canSubmit || sending) return;
     setSending(true);
     setError(null);
-    const { error } = await signInWithEmail(email.trim());
+    const { error } =
+      mode === "signin"
+        ? await signIn(email.trim(), password)
+        : await signUp(email.trim(), password);
     setSending(false);
     if (error) setError(error);
-    else setSent(true);
+    else if (mode === "signup") setSignedUp(true);
   }
 
   return (
@@ -26,44 +34,66 @@ export default function LoginPage() {
       <p className="mt-1 mb-9 text-sm text-[var(--muted)]">
         매일 씨앗 심듯, 오늘 물 한 번 주는 것에서 시작해요
       </p>
-      <h2 className="mb-6 text-xl font-semibold leading-tight">
-        이메일로 로그인해요
-      </h2>
 
-      {sent ? (
+      {signedUp ? (
         <p className="text-base leading-relaxed text-[var(--muted)]">
-          {email}로 로그인 링크를 보냈어요.
-          <br />
-          메일함에서 링크를 눌러주세요.
+          계정을 만들었어요. 이제 이 이메일과 비밀번호로 로그인해주세요.
         </p>
       ) : (
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            autoFocus
-            className="mb-3 w-full rounded-[var(--radius)] border px-3.5 py-3 text-base"
-            style={{ borderColor: "var(--border)" }}
-          />
-          {error && (
-            <p className="mb-3 text-sm" style={{ color: "#b23c3c" }}>
-              {error}
-            </p>
-          )}
-          <button
-            type="submit"
-            disabled={!email.trim() || sending}
-            className="w-full rounded-[var(--radius)] py-3.5 text-base font-medium text-white disabled:opacity-40"
-            style={{ background: "var(--foreground)" }}
-          >
-            {sending ? "보내는 중…" : "로그인 링크 받기"}
-          </button>
-          <p className="mt-3 text-center text-sm leading-relaxed text-[var(--muted)]">
-            비밀번호 없이 이메일로만 로그인해요
-          </p>
-        </form>
+        <>
+          <h2 className="mb-6 text-xl font-semibold leading-tight">
+            {mode === "signin" ? "로그인해요" : "계정을 만들어요"}
+          </h2>
+
+          <form onSubmit={handleSubmit}>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              autoFocus
+              className="mb-2.5 w-full rounded-[var(--radius)] border px-3.5 py-3 text-base"
+              style={{ borderColor: "var(--border)" }}
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호 (6자 이상)"
+              className="mb-3 w-full rounded-[var(--radius)] border px-3.5 py-3 text-base"
+              style={{ borderColor: "var(--border)" }}
+            />
+            {error && (
+              <p className="mb-3 text-sm" style={{ color: "#b23c3c" }}>
+                {error}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={!canSubmit || sending}
+              className="w-full rounded-[var(--radius)] py-3.5 text-base font-medium text-white disabled:opacity-40"
+              style={{ background: "var(--foreground)" }}
+            >
+              {sending
+                ? "확인하는 중…"
+                : mode === "signin"
+                  ? "로그인"
+                  : "계정 만들기"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode(mode === "signin" ? "signup" : "signin");
+                setError(null);
+              }}
+              className="mt-3 w-full text-center text-sm text-[var(--muted)] underline"
+            >
+              {mode === "signin"
+                ? "계정이 없으신가요? 만들기"
+                : "이미 계정이 있으신가요? 로그인"}
+            </button>
+          </form>
+        </>
       )}
     </main>
   );
